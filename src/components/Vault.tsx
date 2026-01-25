@@ -9,6 +9,9 @@ export function Vault({ user }: VaultProps) {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sharingFile, setSharingFile] = useState<string | null>(null);
+  const [duration, setDuration] = useState('PT15M');
+  const [generatedLink, setGeneratedLink] = useState<string | null>(null);
 
   const bucketName = user?.username?.toLowerCase().replace(/[^a-z0-9.-]/g, '-') || '';
 
@@ -95,6 +98,40 @@ export function Vault({ user }: VaultProps) {
     window.open(`/minio/${bucketName}/download/${filename}`, '_blank');
   };
 
+  const toggleShare = (filename: string) => {
+    if (sharingFile === filename) {
+      setSharingFile(null);
+      setGeneratedLink(null);
+    } else {
+      setSharingFile(filename);
+      setGeneratedLink(null);
+      setDuration('PT15M');
+    }
+  };
+
+  const handleGenerateLink = async (filename: string) => {
+    if (!bucketName) return;
+    try {
+      const response = await fetch(`/minio/${bucketName}/link/${duration}/${filename}`);
+      if (response.ok) {
+        const link = await response.text();
+        setGeneratedLink(link);
+      } else {
+        alert('Failed to generate link');
+      }
+    } catch (err) {
+      console.error('Error generating link', err);
+      alert('Error generating link');
+    }
+  };
+
+  const copyToClipboard = () => {
+    if (generatedLink) {
+      navigator.clipboard.writeText(generatedLink);
+      alert('Link copied to clipboard!');
+    }
+  };
+
   if (!user) {
     return (
       <div className="vault-container">
@@ -131,14 +168,60 @@ export function Vault({ user }: VaultProps) {
             <p>No files yet.</p>
           ) : (
             files.map((fileName) => (
-              <li key={fileName} className="file-item">
-                <button 
-                  className="file-link" 
-                  onClick={() => handleDownload(fileName)}
-                  title="Download"
-                >
-                  {fileName}
-                </button>
+              <li key={fileName} className="file-item-container">
+                <div className="file-item">
+                  <button 
+                    className="file-link" 
+                    onClick={() => handleDownload(fileName)}
+                    title="Download"
+                  >
+                    {fileName}
+                  </button>
+                  <button 
+                    className="share-button" 
+                    onClick={() => toggleShare(fileName)}
+                  >
+                    {sharingFile === fileName ? 'Cancel' : 'Share'}
+                  </button>
+                </div>
+                
+                {sharingFile === fileName && (
+                  <div className="share-panel">
+                    {!generatedLink ? (
+                      <div className="share-setup">
+                        <select 
+                          value={duration} 
+                          onChange={(e) => setDuration(e.target.value)}
+                          className="duration-select"
+                        >
+                          <option value="PT15M">15 Minutes</option>
+                          <option value="PT1H">1 Hour</option>
+                          <option value="P1D">1 Day</option>
+                          <option value="P7D">1 Week</option>
+                        </select>
+                        <button 
+                          onClick={() => handleGenerateLink(fileName)}
+                          className="generate-button"
+                        >
+                          Generate Link
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="link-display">
+                        <input 
+                          type="text" 
+                          readOnly 
+                          value={generatedLink} 
+                          className="link-input"
+                          onClick={(e) => (e.target as HTMLInputElement).select()}
+                        />
+                        <button onClick={copyToClipboard} className="copy-button">
+                          Copy
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </li>
             ))
           )}
