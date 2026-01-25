@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
-import { LoginButton } from './auth/LoginButton'
+import { Layout } from './components/Layout'
+import { Vault } from './components/Vault'
+import { About } from './components/About'
 
 interface UserInfo {
   username: string;
@@ -11,8 +12,16 @@ interface UserInfo {
   roles: string[];
 }
 
+function Home() {
+  return (
+    <div className="home">
+      <h1>Welcome to Execodex</h1>
+      <p>Securely manage your execution environments and secrets.</p>
+    </div>
+  )
+}
+
 function App() {
-  const [count, setCount] = useState(0)
   const [user, setUser] = useState<UserInfo | null>(null)
 
   useEffect(() => {
@@ -28,35 +37,15 @@ function App() {
   }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        {user ? (
-          <div>
-            <p>Welcome, {user.username}!</p>
-          </div>
-        ) : (
-          <LoginButton />
-        )}
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout user={user} />}>
+          <Route index element={<Home />} />
+          <Route path="vault" element={<Vault user={user} />} />
+          <Route path="about" element={<About />} />
+        </Route>
+      </Routes>
+    </Router>
   )
 }
 
