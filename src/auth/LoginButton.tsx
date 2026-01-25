@@ -1,4 +1,4 @@
-const LOGIN_URL = `/oauth2/authorization/gateway-rest-api`;
+const LOGIN_URL = `/oauth2/authorization/gateway-rest-client`;
 
 export function LoginButton() {
   return (

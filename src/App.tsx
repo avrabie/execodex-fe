@@ -41,7 +41,7 @@ function App() {
       <div className="card">
         {user ? (
           <div>
-            <p>Welcome, {user.name}!</p>
+            <p>Welcome, {user.username}!</p>
           </div>
         ) : (
           <LoginButton />
