@@ -4,14 +4,8 @@ interface VaultProps {
   user: { username: string } | null;
 }
 
-interface FileItem {
-  name: string;
-  size: number;
-  lastModified: string;
-}
-
 export function Vault({ user }: VaultProps) {
-  const [files, setFiles] = useState<FileItem[]>([]);
+  const [files, setFiles] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,6 +20,7 @@ export function Vault({ user }: VaultProps) {
       const response = await fetch(`/minio/${bucketName}`);
       if (response.ok) {
         const data = await response.json();
+        // The backend returns an array of strings (filenames)
         setFiles(Array.isArray(data) ? data : []);
       } else if (response.status === 404) {
         // Bucket might not exist, try to create it
@@ -135,14 +130,14 @@ export function Vault({ user }: VaultProps) {
           {files.length === 0 ? (
             <p>No files yet.</p>
           ) : (
-            files.map((file) => (
-              <li key={file.name} className="file-item">
+            files.map((fileName) => (
+              <li key={fileName} className="file-item">
                 <button 
                   className="file-link" 
-                  onClick={() => handleDownload(file.name)}
+                  onClick={() => handleDownload(fileName)}
                   title="Download"
                 >
-                  {file.name}
+                  {fileName}
                 </button>
               </li>
             ))
