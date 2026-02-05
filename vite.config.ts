@@ -8,17 +8,18 @@ export default defineConfig({
     proxy: {
 
       '/oauth2': {
-        target: 'http://localhost:9090',
+        target: 'http://s4v3.local',
         changeOrigin: true,
+
       },
 
       '/bff': {
-        target: 'http://localhost:9090',
+        target: 'http://s4v3.local',
         changeOrigin: true,
       },
 
       '/minio': {
-        target: 'http://localhost:9090',
+        target: 'http://minio.s4v3.local',
         changeOrigin: true,
       },
     },
