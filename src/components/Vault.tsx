@@ -20,7 +20,7 @@ export function Vault({ user }: VaultProps) {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`/minio/${bucketName}`);
+      const response = await fetch(`/api/minio/${bucketName}`);
       if (response.ok) {
         const data = await response.json();
         // The backend returns an array of strings (filenames)
@@ -42,7 +42,7 @@ export function Vault({ user }: VaultProps) {
   const createBucket = async () => {
     if (!bucketName) return;
     try {
-      const response = await fetch(`/minio/${bucketName}`, {
+      const response = await fetch(`/api/minio/${bucketName}`, {
         method: 'POST',
       });
       if (response.ok) {
@@ -73,7 +73,7 @@ export function Vault({ user }: VaultProps) {
     formData.append('file', file);
 
     try {
-      const response = await fetch(`/minio/${bucketName}/upload`, {
+      const response = await fetch(`/api/minio/${bucketName}/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -95,7 +95,7 @@ export function Vault({ user }: VaultProps) {
 
   const handleDownload = (filename: string) => {
     if (!bucketName) return;
-    window.open(`/minio/${bucketName}/download/${filename}`, '_blank');
+    window.open(`/api/minio/${bucketName}/download/${filename}`, '_blank');
   };
 
   const toggleShare = (filename: string) => {
@@ -112,7 +112,7 @@ export function Vault({ user }: VaultProps) {
   const handleGenerateLink = async (filename: string) => {
     if (!bucketName) return;
     try {
-      const response = await fetch(`/minio/${bucketName}/link/${duration}/${filename}`);
+      const response = await fetch(`/api/minio/${bucketName}/link/${duration}/${filename}`);
       if (response.ok) {
         const link = await response.text();
         setGeneratedLink(link);

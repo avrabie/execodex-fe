@@ -15,7 +15,7 @@ interface UserInfo {
 function Home() {
   return (
     <div className="home">
-      <h1>Welcome to Execodex</h1>
+      <h1>Welcome to Execodex!</h1>
       <p>Securely manage your execution environments and secrets.</p>
     </div>
   )
@@ -25,7 +25,7 @@ function App() {
   const [user, setUser] = useState<UserInfo | null>(null)
 
   useEffect(() => {
-    fetch('/bff/me')
+    fetch('/api/bff/me')
       .then(response => {
         if (response.ok) {
           return response.json();

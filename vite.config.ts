@@ -6,19 +6,15 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-
       '/oauth2': {
         target: 'http://s4v3.local',
         changeOrigin: true,
-
       },
-
-      '/bff': {
+      '/api/bff': {
         target: 'http://s4v3.local',
         changeOrigin: true,
       },
-
-      '/minio': {
+      '/api/minio': {
         target: 'http://minio.s4v3.local',
         changeOrigin: true,
       },
