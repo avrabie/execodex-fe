@@ -23,8 +23,8 @@ metadata:
     nginx.org/client-max-body-size: "300m"
 spec:
   parentRefs:
-  - name: keycloak-gateway
-    namespace: keycloak-namespace
+  - name: global-gateway
+    namespace: gateway-namespace
   hostnames:
   - "iaka.local"
   rules:
