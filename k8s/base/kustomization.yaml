@@ -1,0 +1,12 @@
+namespace: execodex
+
+resources:
+- namespace.yaml
+- deployment.yaml
+- service.yaml
+- execodex-gateway.yaml
+
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/name: execodex-fe
